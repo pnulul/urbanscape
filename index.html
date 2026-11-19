@@ -76,15 +76,16 @@
   .hero h1 .short.lul{letter-spacing:.1144em;margin-right:-.1144em}
   /* seal sits on the LUL baseline, 72% of the cap height (0.75em x 0.8 x 0.9) */
   .hero h1{position:relative}
-  .hero h1 .seal{height:.486em;width:auto;aspect-ratio:1/1;flex:none}
+  .hero h1 .seal{height:.413em;width:auto;aspect-ratio:1/1;flex:none}
   .hero p{margin-top:28px;max-width:560px;color:#bdbdbd;font-weight:300;font-size:clamp(15px,1.6vw,18px)}
   .hero .meta{display:flex;gap:28px;margin-top:48px;font-family:var(--display);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#bdbdbd}
 
   /* ---------- Section frame ---------- */
   section{padding:clamp(72px,10vw,128px) 0;border-bottom:1px solid var(--black)}
   /* dividers between Applications, People and Projects: inset from the screen edges */
-  #application,#people{border-bottom:0;position:relative}
-  #application::after,#people::after{content:"";position:absolute;left:clamp(16px,3vw,40px);right:clamp(16px,3vw,40px);bottom:0;height:1px;background:var(--black)}
+  #application,#people,#project{border-bottom:0;position:relative}
+  #news{border-bottom:0}
+  #application::after,#people::after,#project::after{content:"";position:absolute;left:clamp(16px,3vw,40px);right:clamp(16px,3vw,40px);bottom:0;height:1px;background:var(--black)}
   .sec-head{display:grid;grid-template-columns:1fr 2fr;gap:32px;align-items:end;margin-bottom:clamp(40px,6vw,72px)}
   .sec-head .num{font-family:var(--display);font-size:12px;letter-spacing:.14em;color:var(--mid);display:block;margin-bottom:12px}
   .sec-head h2{font-family:var(--hero);font-weight:800;font-size:clamp(28px,4.2vw,50px);line-height:1;letter-spacing:-.02em;text-transform:uppercase}
@@ -92,7 +93,26 @@
   .sec-head h2 > span{white-space:nowrap}
   .sec-head h2 .spin-o{display:inline-block;height:.8em;width:.8em;vertical-align:-.05em;margin:0 .03em;animation:spin-o 9s linear infinite}
   @keyframes spin-o{to{transform:rotate(360deg)}}
-  @media (prefers-reduced-motion:reduce){.sec-head h2 .spin-o{animation:none}}
+  /* News: grayscale still; hover shows colour (video) or the animated photo set */
+  .news-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:28px 20px}
+  .news-item{display:block;color:inherit;text-decoration:none;outline-offset:4px}
+  .ni-img{position:relative;aspect-ratio:3/2;overflow:hidden;background:#eee}
+  .ni-img img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;max-width:none}
+  .ni-hover{opacity:0;transition:opacity .3s ease}
+  .news-item:hover .ni-hover,.news-item:focus-visible .ni-hover,.news-item.on .ni-hover{opacity:1}
+  .ni-play{transition:opacity .25s ease}
+  .news-item:hover .ni-play,.news-item:focus-visible .ni-play{opacity:0}
+  .ni-play{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:rgba(0,0,0,.72)}
+  .ni-play::after{content:"";position:absolute;left:22px;top:17px;border-style:solid;border-width:10px 0 10px 16px;border-color:transparent transparent transparent #fff}
+  .news-item h3{font-weight:600;font-size:17px;margin:14px 0 4px;letter-spacing:-.01em}
+  .news-item p{font-size:13px;color:var(--mid);margin:0}
+  @media (max-width:900px){.news-grid{grid-template-columns:repeat(2,1fr)}}
+  @media (max-width:640px){.news-grid{grid-template-columns:1fr}}
+  /* NEWS: the meander stands in for E; it rolls out from behind N, rests, then rolls in behind W */
+  .sec-head h2 .nw{position:relative;z-index:1;background:var(--white)}
+  .sec-head h2 .spin-e{position:relative;z-index:0;display:inline-block;height:.74em;width:calc(.74em * 83.5 / 95);vertical-align:-.02em;margin:0 .07em 0 .04em;animation:spin-e 6s cubic-bezier(.5,0,.3,1) infinite}
+  @keyframes spin-e{0%{transform:translateX(-115%) rotate(-360deg)}22%,62%{transform:none}84%,100%{transform:translateX(125%) rotate(360deg)}}
+  @media (prefers-reduced-motion:reduce){.sec-head h2 .spin-o,.sec-head h2 .spin-e{animation:none}}
   .sec-head p{color:#444;max-width:620px;font-weight:300}
   .label{font-family:var(--display);font-size:11px;font-weight:600;letter-spacing:.14em;text-transform:uppercase}
 
@@ -117,9 +137,11 @@
   .year-head .cnt{font-family:var(--display);font-size:11px;letter-spacing:.14em;color:var(--mid);text-transform:uppercase}
 
   .y2026{margin-bottom:clamp(48px,7vw,80px)}
-  .groups{display:grid;grid-template-columns:auto auto 1fr;gap:40px;--face:clamp(109px,calc((100vw - 260px) / 6),156px)}
+  /* 2026 row: six equal photos, five equal gaps (gap = 1/5 photo) spanning the full content width */
+  .y2026{container-type:inline-size}
+  .groups{display:flex;justify-content:space-between;--face:calc(100cqi / 7);--g:calc(100cqi / 35);gap:var(--g)}
   .group .label{display:block;margin-bottom:18px;color:var(--mid)}
-  .faces{display:flex;flex-wrap:wrap;gap:24px}
+  .faces{display:flex;gap:var(--g,24px)}
   .face{display:flex;flex-direction:column;align-items:center;gap:12px;width:var(--face);text-align:center}
   .face .circle{width:var(--face);height:var(--face);border-radius:50%;background:var(--gray);display:grid;place-items:center;position:relative;overflow:hidden;transition:background .25s}
   .face .circle::after{content:"PHOTO";font-family:var(--display);font-size:10px;letter-spacing:.16em;color:var(--mid)}
@@ -129,8 +151,19 @@
   .face .circle img{width:100%;height:100%;object-fit:cover;filter:grayscale(1);transition:transform .4s ease}
   .face:hover .circle img{transform:scale(1.04)}
   .face:hover .nm,.face[aria-expanded="true"] .nm{border-color:var(--black)}
-  .face .circle{transition:box-shadow .25s ease}
-  .face[aria-expanded="true"] .circle{box-shadow:0 0 0 8px var(--ring,#111)}
+  /* rotating shape behind the photo (교수, 석사, 학부연구생); shown on hover and while open */
+  .face{position:relative}
+  .face .circle,.face .nm{z-index:1}
+  #people .group .label,#people .year-head{position:relative;z-index:2}
+  #people .group .label{background:var(--white);padding-right:.5em;width:fit-content}
+  .face .nm{position:relative;background:var(--white);padding:0 .3em}
+  .face .halo{position:absolute;z-index:0;max-width:none;max-height:none;display:block;left:50%;top:calc(var(--face) / 2);width:calc(var(--face) * var(--hs,1.9));height:calc(var(--face) * var(--hs,1.9));margin:calc(var(--face) * var(--hs,1.9) / -2) 0 0 calc(var(--face) * var(--hs,1.9) / -2);opacity:0;transition:opacity .3s ease;pointer-events:none}
+  .face:hover .halo,.face:focus-visible .halo,.face[aria-expanded="true"] .halo{opacity:1}
+  .face .halo-prof{--hs:1.177;animation:halo-spin 14s linear infinite}
+  .face .halo-master{--hs:1.177;animation:halo-spin 20s linear infinite reverse}
+  .face .halo-bachelor{--hs:1.147;animation:halo-spin 16s linear infinite}
+  @keyframes halo-spin{to{rotate:360deg}}
+  @media (prefers-reduced-motion:reduce){.face .halo{animation:none}}
 
   .years-row{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(20px,3vw,40px)}
   .yc .row{display:flex;gap:14px;align-items:baseline;padding:12px 0}
@@ -147,6 +180,9 @@
   /* expandable person page */
   .panel{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s ease}
   .panel.open{grid-template-rows:1fr}
+  /* 2025/2024 share one person page that spans the full width, like 2026 */
+  .years-row{row-gap:0}
+  .years-row > .years-panel{grid-column:1 / -1}
   .panel > .inner{overflow:hidden;overflow:clip;min-height:0}
   .pp{--pp-pad:clamp(24px,4vw,44px);margin-top:28px;background:var(--black);color:var(--white);padding:var(--pp-pad);position:relative}
   .pp .top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px}
@@ -220,9 +256,6 @@
 
   /* ---------- Responsive ---------- */
   @media (max-width:960px){
-    .groups{gap:20px}
-    .faces{gap:14px}
-    .groups{--face:109px}
     .app p{font-size:14px}
   }
   @media (max-width:640px){
@@ -231,7 +264,8 @@
     .projects{grid-template-columns:1fr}
     nav a{font-size:10px;letter-spacing:.08em}
     .logo{font-size:15px} nav{gap:12px} header .wrap{gap:12px}
-    .groups{--face:125px}
+    .groups{display:grid;--face:125px;--g:14px;gap:20px}
+    .faces{flex-wrap:wrap}
   }
   @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
 </style>
@@ -245,6 +279,7 @@
       <a href="#application">Applications</a>
       <a href="#people">People</a>
       <a href="#project">Projects</a>
+      <a href="#news">News</a>
     </nav>
   </div>
 </header>
@@ -305,22 +340,22 @@
         <div class="group">
           <span class="label">교수</span>
           <div class="faces">
-            <button class="face" style="--ring:#3786c1" data-name="심지수" data-role="" aria-expanded="false"><span class="circle has-photo"><img src="img/person-simjisoo.jpg" alt=""></span><span class="nm">심지수</span></button>
+            <button class="face" data-name="심지수" data-role="" aria-expanded="false"><img class="halo halo-prof" src="img/halo-prof.svg" alt="" aria-hidden="true"><span class="circle has-photo"><img src="img/person-simjisoo.jpg" alt=""></span><span class="nm">심지수</span></button>
           </div>
         </div>
         <div class="group">
           <span class="label">석사과정</span>
           <div class="faces">
-            <button class="face" style="--ring:#fec304" data-name="이청훈" data-role="석사과정 2026" aria-expanded="false"><span class="circle"></span><span class="nm">이청훈</span></button>
-            <button class="face" style="--ring:#f04c89" data-name="김상아" data-role="석사과정 2026" aria-expanded="false"><span class="circle"></span><span class="nm">김상아</span></button>
+            <button class="face" data-name="이청훈" data-role="석사과정 2026" aria-expanded="false"><img class="halo halo-master" src="img/halo-master.svg" alt="" aria-hidden="true"><span class="circle has-photo"><img src="img/person-leecheonghoon.jpg" alt=""></span><span class="nm">이청훈</span></button>
+            <button class="face" data-name="김상아" data-role="석사과정 2026" aria-expanded="false"><img class="halo halo-master" src="img/halo-master.svg" alt="" aria-hidden="true"><span class="circle has-photo"><img src="img/person-kimsanga.jpg" alt=""></span><span class="nm">김상아</span></button>
           </div>
         </div>
         <div class="group">
           <span class="label">학부연구생</span>
           <div class="faces">
-            <button class="face" style="--ring:#039e76" data-name="강민균" data-role="학부연구생 2026" aria-expanded="false"><span class="circle"></span><span class="nm">강민균</span></button>
-            <button class="face" style="--ring:#e2611d" data-name="고승민" data-role="학부연구생 2026" aria-expanded="false"><span class="circle"></span><span class="nm">고승민</span></button>
-            <button class="face" style="--ring:#d9cdbd" data-name="박시은" data-role="학부연구생 2026" aria-expanded="false"><span class="circle"></span><span class="nm">박시은</span></button>
+            <button class="face" data-name="강민균" data-role="학부연구생 2026" aria-expanded="false"><img class="halo halo-bachelor" src="img/halo-bachelor.svg" alt="" aria-hidden="true"><span class="circle has-photo"><img src="img/person-kangmingyun.jpg" alt=""></span><span class="nm">강민균</span></button>
+            <button class="face" data-name="고승민" data-role="학부연구생 2026" aria-expanded="false"><img class="halo halo-bachelor" src="img/halo-bachelor.svg" alt="" aria-hidden="true"><span class="circle has-photo"><img src="img/person-koseungmin.jpg" alt=""></span><span class="nm">고승민</span></button>
+            <button class="face" data-name="박시은" data-role="학부연구생 2026" aria-expanded="false"><img class="halo halo-bachelor" src="img/halo-bachelor.svg" alt="" aria-hidden="true"><span class="circle has-photo"><img src="img/person-parkshieun.jpg" alt=""></span><span class="nm">박시은</span></button>
           </div>
         </div>
       </div>
@@ -328,20 +363,19 @@
     </div>
 
     <!-- 2025 / 2024 : 2 of 3 columns -->
-    <div class="years-row">
-      <div class="yc" data-block>
+    <div class="years-row" data-block>
+      <div class="yc">
         <div class="year-head"><span class="yr">2025</span></div>
         <div class="row"><span class="label">석사과정</span><div class="names"><button class="name-btn" data-name="이청훈" data-role="석사과정 2025" aria-expanded="false">이청훈</button></div></div>
         <div class="row"><span class="label">학부연구생</span><div class="names"><span class="name-plain">김예찬</span><span class="name-plain">박준하</span></div></div>
-        <div class="panel"><div class="inner"></div></div>
       </div>
 
-      <div class="yc" data-block>
+      <div class="yc">
         <div class="year-head"><span class="yr">2024</span></div>
         <div class="row"><span class="label">학부연구생</span><div class="names"><button class="name-btn" data-name="이청훈" data-role="학부연구생 2024" aria-expanded="false">이청훈</button></div></div>
-        <div class="panel"><div class="inner"></div></div>
       </div>
 
+      <div class="panel years-panel"><div class="inner"></div></div>
     </div>
   </div>
 </section>
@@ -358,6 +392,20 @@
       <div class="tile" tabindex="0"><img src="img/proj-02.jpg" alt=""><div class="ov"><h3>AI 수업혁신모델 연구</h3><p>부산대학교 2026</p></div></div>
       <div class="tile" tabindex="0"><img src="img/proj-03.jpg" alt=""><div class="ov"><h3>조경 비전 2050 수립 연구</h3><p>국토교통부 2025-2026</p></div></div>
       <div class="tile" tabindex="0"><img src="img/proj-04.jpg" alt=""><div class="ov"><h3>가로경관을 통해 본 도시의 흥망성쇠</h3><p>한국연구재단 2024-2026</p></div></div>
+    </div>
+  </div>
+</section>
+<section id="news">
+  <div class="wrap">
+    <div class="sec-head">
+      <div><h2 aria-label="News"><span aria-hidden="true"><span class="nw">N</span><img class="spin-e" src="img/e-news.svg" alt=""><span class="nw">W</span>S</span></h2></div>
+    </div>
+
+    <div class="news-grid">
+      <a class="news-item" href="https://www.youtube.com/watch?v=yKBg-1ALb-w" target="_blank" rel="noopener">
+        <div class="ni-img"><img class="ni-still" src="img/news-yt-bw.jpg" alt="Google for Education 홍보 영상 썸네일"><img class="ni-hover" data-src="img/news-yt.webp" alt="" aria-hidden="true"><span class="ni-play" aria-hidden="true"></span></div>
+        <h3>Google for Education 홍보 영상</h3><p>2026.11.05</p>
+      </a>
     </div>
   </div>
 </section>
@@ -447,12 +495,14 @@
     PEOPLE[n] = { edu:['부산대학교 조경학과 학사과정'], award:[['외국인관광객의 시각적경관소비특성분석',null,null,'한국조경학회 추계학술대회 우수발표상']], proj:[['2026',[SGS2]]] };
   });
 
+  // English names, kept for the planned English version of the site (not shown yet)
+  var EN_NAME = {'심지수':'Jisoo Sim','이청훈':'Cheonghoon Lee','김상아':'Sanga Kim','강민균':'Mingyun Kang','박시은':'Shieun Park','고승민':'Seungmin Ko'};
   var EMAIL = {
     '심지수':'jisoosim@pusan.ac.kr',
     '이청훈':'zx2635@pusan.ac.kr',
     '김상아':'ksa@pusan.ac.kr',
     '고승민':'kas6959@pusan.ac.kr',
-    '강민균':'rriioopp88@gmail.com',
+    '강민균':'rriioopp88@pusan.ac.kr',
     '박시은':'paulinepark911@pusan.ac.kr'
   };
   var ENVELOPE = '<svg viewBox="0 0 24 18" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" aria-hidden="true"><rect x="1" y="1" width="22" height="16" rx="1.5"/><path d="M1.5 2l10.5 8.5L22.5 2"/></svg>';
@@ -622,6 +672,22 @@
   var brand = document.querySelector('.hero h1.brand');
   if(brand) brand.addEventListener('click', function(){
     if(window.matchMedia('(hover: none)').matches) brand.classList.toggle('open');
+  });
+
+  // ---- News: load the hover image on first hover (restarts the animated one each time)
+  document.querySelectorAll('.news-item').forEach(function(it){
+    var h = it.querySelector('.ni-hover'); if(!h) return;
+    function show(){ var src=h.getAttribute('data-src'); h.src=''; h.src=src; }
+    it.addEventListener('mouseenter', show);
+    it.addEventListener('focus', show);
+    if(it.tagName!=='A') it.addEventListener('click', function(){
+      if(window.matchMedia('(hover: none)').matches){ if(!it.classList.contains('on')) show(); it.classList.toggle('on'); }
+    });
+  });
+
+  // ---- News: fetch the hover images once the page is idle so the first hover is instant
+  window.addEventListener('load', function(){
+    setTimeout(function(){ document.querySelectorAll('.ni-hover').forEach(function(h){ var i=new Image(); i.src=h.getAttribute('data-src'); }); }, 800);
   });
 
   // ---- Project tiles: hover on desktop, tap to toggle on touch
